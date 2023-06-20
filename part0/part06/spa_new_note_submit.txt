@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant user
+    participant browser
+    participant server
+    
+    user ->> user: Create new note in exit box 
+    user ->> browser: Press Submit button
+
+    browser->>browser: Create new note object based on user input
+    browser->>browser: Add note to the notes list
+    browser->>browser: Re-rendeds notes on the page
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    Note right of browser: Browser sends POST request with new note in JSON format
