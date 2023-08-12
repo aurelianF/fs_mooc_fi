@@ -3,18 +3,26 @@ import './App.css';
 import { useState } from "react";
 
 // a proper place to define a component
-const Statistics = ({good, bad, neutral, all, avgFB, totalFB, positiveFB}) => {
+const Statistics = ({ show, good, bad, neutral, all, avgFB, totalFB, positiveFB }) => {
 
-  return (
-    <div>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {totalFB}</p>
-      <p>average {avgFB}</p>
-      <p>positive {positiveFB}</p>
-    </div>
-  )
+  console.log("show ", show);
+  if (show === true) {
+    return (
+      <div>
+        <p>good {good}</p>
+        <p>neutral {neutral}</p>
+        <p>bad {bad}</p>
+        <p>all {totalFB}</p>
+        <p>average {avgFB}</p>
+        <p>positive {positiveFB}</p>
+      </div>
+    )
+  } else {
+    return (
+      <p>No feedback given</p>
+    )
+  }
+
 }
 
 const Button = function (props) {
@@ -29,6 +37,7 @@ function App() {
   const [good, setGood] = useState(0)
   const [bad, setBad] = useState(0)
   const [neutral, setNeutral] = useState(0)
+  let showStatistics = false;
 
   function giveFeedback(feedbackType) {
     switch (feedbackType) {
@@ -42,6 +51,12 @@ function App() {
   let avgFB = (good + bad + neutral) / 3;
   let totalFB = good + bad + neutral;
   let positiveFB = good / totalFB;
+  if (totalFB > 0) {
+
+    showStatistics = true;
+  }
+  console.log("showStatistics: " + showStatistics);
+
   return (
     <div>
       <h1>give feedback</h1>
@@ -49,7 +64,8 @@ function App() {
       <Button handleClick={() => giveFeedback("neutral")} text="neutral" />
       <Button handleClick={() => giveFeedback("bad")} text="bad" />
       <h1>statistics</h1>
-      <Statistics good={good} bad={bad} neutral={neutral} avgFB={avgFB}totalFB={totalFB} positiveFB={positiveFB} />
+      <Statistics show={showStatistics} good={good} bad={bad} neutral={neutral}
+        avgFB={avgFB} totalFB={totalFB} positiveFB={positiveFB} />
     </div>
     // <div className="App">
     //   <header className="App-header">
