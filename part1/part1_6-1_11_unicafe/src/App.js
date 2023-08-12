@@ -3,7 +3,7 @@ import './App.css';
 import { useState } from "react";
 
 // a proper place to define a component
-const Statistics = ({ show, good, bad, neutral, all, avgFB, totalFB, positiveFB }) => {
+/* const Statistics = ({ show, good, bad, neutral, all, avgFB, totalFB, positiveFB }) => {
 
   console.log("show ", show);
   if (show === true) {
@@ -23,6 +23,13 @@ const Statistics = ({ show, good, bad, neutral, all, avgFB, totalFB, positiveFB 
     )
   }
 
+} */
+const StatisticLine = function (props) {
+  return (
+    <div>
+      <p>{props.text} {props.value}</p>
+    </div>
+  )
 }
 
 const Button = function (props) {
@@ -57,33 +64,39 @@ function App() {
   }
   console.log("showStatistics: " + showStatistics);
 
-  return (
-    <div>
-      <h1>give feedback</h1>
-      <Button handleClick={() => giveFeedback("good")} text="good" />
-      <Button handleClick={() => giveFeedback("neutral")} text="neutral" />
-      <Button handleClick={() => giveFeedback("bad")} text="bad" />
-      <h1>statistics</h1>
-      <Statistics show={showStatistics} good={good} bad={bad} neutral={neutral}
-        avgFB={avgFB} totalFB={totalFB} positiveFB={positiveFB} />
-    </div>
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
-  );
+  if (showStatistics) {
+    return (
+      <div>
+        <h1>give feedback</h1>
+        <Button handleClick={() => giveFeedback("good")} text="good" />
+        <Button handleClick={() => giveFeedback("neutral")} text="neutral" />
+        <Button handleClick={() => giveFeedback("bad")} text="bad" />
+        <h1>statistics</h1>
+        <StatisticLine text="good" value={good} />
+        <StatisticLine text="neutral" value={neutral} />
+        <StatisticLine text="bad" value={bad} />
+        <StatisticLine text="all" value={totalFB} />
+        <StatisticLine text="average" value={avgFB} />
+        <StatisticLine text="positive" value={positiveFB} />
+        {/* <Statistics show={showStatistics} good={good} bad={bad} neutral={neutral}
+      avgFB={avgFB} totalFB={totalFB} positiveFB={positiveFB} /> */}
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <h1>give feedback</h1>
+        <Button handleClick={() => giveFeedback("good")} text="good" />
+        <Button handleClick={() => giveFeedback("neutral")} text="neutral" />
+        <Button handleClick={() => giveFeedback("bad")} text="bad" />
+        <h1>statistics</h1>
+        <p>No feedback given</p>
+        {/* <Statistics show={showStatistics} good={good} bad={bad} neutral={neutral}
+      avgFB={avgFB} totalFB={totalFB} positiveFB={positiveFB} /> */}
+      </div>
+    )
+  }
+
 }
 
 export default App;
