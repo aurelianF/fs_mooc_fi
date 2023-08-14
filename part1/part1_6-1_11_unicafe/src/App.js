@@ -1,34 +1,13 @@
-import logo from './logo.svg';
 import './App.css';
 import { useState } from "react";
 
-// a proper place to define a component
-/* const Statistics = ({ show, good, bad, neutral, all, avgFB, totalFB, positiveFB }) => {
-
-  console.log("show ", show);
-  if (show === true) {
-    return (
-      <div>
-        <p>good {good}</p>
-        <p>neutral {neutral}</p>
-        <p>bad {bad}</p>
-        <p>all {totalFB}</p>
-        <p>average {avgFB}</p>
-        <p>positive {positiveFB}</p>
-      </div>
-    )
-  } else {
-    return (
-      <p>No feedback given</p>
-    )
-  }
-
-} */
 const StatisticLine = function (props) {
   return (
-    <div>
-      <p>{props.text} {props.value}</p>
-    </div>
+    <tr>
+      <td>{props.text}</td>
+      <td>{props.value}</td>
+    </tr>
+
   )
 }
 
@@ -72,14 +51,14 @@ function App() {
         <Button handleClick={() => giveFeedback("neutral")} text="neutral" />
         <Button handleClick={() => giveFeedback("bad")} text="bad" />
         <h1>statistics</h1>
-        <StatisticLine text="good" value={good} />
-        <StatisticLine text="neutral" value={neutral} />
-        <StatisticLine text="bad" value={bad} />
-        <StatisticLine text="all" value={totalFB} />
-        <StatisticLine text="average" value={avgFB} />
-        <StatisticLine text="positive" value={positiveFB} />
-        {/* <Statistics show={showStatistics} good={good} bad={bad} neutral={neutral}
-      avgFB={avgFB} totalFB={totalFB} positiveFB={positiveFB} /> */}
+        <table>
+          <StatisticLine text="good" value={good} />
+          <StatisticLine text="neutral" value={neutral} />
+          <StatisticLine text="bad" value={bad} />
+          <StatisticLine text="all" value={totalFB} />
+          <StatisticLine text="average" value={avgFB} />
+          <StatisticLine text="positive" value={positiveFB} />
+        </table>
       </div>
     )
   } else {
