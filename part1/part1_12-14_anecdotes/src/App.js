@@ -20,18 +20,36 @@ const App = () => {
   const vote = function () {
     votes[selected] += 1;
     setVotes([...votes]);
+    // console.log("selected: " + selected);
+    // console.log(votes);
   }
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(Array(8).fill(0))
 
+  const findMax = function(arr) {
+    let idx = 0;
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[idx] < arr[i]) {
+        idx = i;
+      }
+    }
+    return idx;
+  }
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <div>
         <p>has {votes[selected]} votes</p>
         <button onClick={vote}>vote</button>
         <button onClick={generateIndex}>next anecdote</button>
+      </div>
+      <div>
+        <h1>Anecdote with the most votes</h1>
+        <div>
+          {anecdotes[findMax(votes)]}
+        </div>
       </div>
     </div>
   )
