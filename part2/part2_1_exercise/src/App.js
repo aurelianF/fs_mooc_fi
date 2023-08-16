@@ -1,11 +1,13 @@
-const Content =  () => {};
-const Course = ({course}) => {
-  console.log(course);
+const Content = () => { };
+const Course = ({ course }) => {
+  // console.log(course);
   return (
     <div>
       <h1>{course.name}</h1>
-        {/* {course.parts.map((part) => <li key={part.id}>{part.name} {part.exercises}</li>)} */}
-        {course.parts.map((part) => <p>{part.name} {part.exercises}</p>)}
+      {course.parts.map((part) => <p>{part.name} {part.exercises}</p>)}
+      <p>
+        Total of {course.parts.reduce((acc, part) => (acc + part.exercises), 0)} exercises
+      </p>
     </div>
   )
 };
