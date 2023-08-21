@@ -1,6 +1,15 @@
 import { useState } from 'react'
 
+// Equals method, checking only "name" property
+function equals(a, b) {
+  if (a.name === b.name) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
+// main App component
 const App = () => {
   const [newName, setNewName] = useState('')
 
@@ -9,8 +18,22 @@ const App = () => {
     const newPerson = {
       name:newName,
     }
-    setPersons(persons.concat(newPerson));
-    setNewName("Default name: Costel");
+
+    // marker for duplication
+    let exists = false;
+    // iterate through entire array
+    for (let index = 0; index < persons.length; index++) {
+      if (equals(persons[index], newPerson)) {
+        exists = true;
+        alert(`${newPerson.name} is already added in the phonebook`);
+        break;
+      } 
+    }
+    if (!exists) {
+      setPersons(persons.concat(newPerson));
+      setNewName("");      
+    } 
+    console.log("Array at end of call ", persons);
   }
   const handleFieldChange = (event) => {
     setNewName(event.target.value);
@@ -18,7 +41,6 @@ const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas' }
   ])
-  // const [singlePerson, setSinglePerson] = useState("test")
 
   return (
     <div>
