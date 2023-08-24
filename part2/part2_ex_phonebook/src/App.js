@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AddNewPeople from './components/AddNewPeople'
 import RenderAllPeople from './components/RenderAllPeople'
 import SearchFilter from './components/SearchFilter';
+import axios from 'axios'
 
 // Equals method, checking only "name" property
 function equals(a, b) {
@@ -16,17 +17,22 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterVar, setfilterVar] = useState('')
-  // let filterVar= null;
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+    // { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    // { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    // { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    // { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ])
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
   const [filteredList, setFilteredList] = useState([]);
 
   const addName = (event) => {
-    // console.log("addName called with event: ", event);
     event.preventDefault();
     const newPerson = {
       name: newName,
@@ -49,7 +55,6 @@ const App = () => {
       setPersons(persons.concat(newPerson));
       setNewName("");
       setNewNumber("");
-      // setfilterVar("");
     }
 
   }
@@ -62,10 +67,7 @@ const App = () => {
   const handleFilterInputChange = (event) => {
     let filterVar1 = event.target.value;
     setfilterVar(event.target.value);
-    // console.log("Filter: ", filterVar1);
     setFilteredList(persons.filter(p => {
-      // console.log("p.name: ", p.name);
-      // console.log(p.name.startsWith(filterVar1));
       return (p.name.toLocaleLowerCase().startsWith(filterVar1.toLocaleLowerCase()))
     }));
   }
