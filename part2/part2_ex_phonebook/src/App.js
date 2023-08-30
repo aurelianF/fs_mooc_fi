@@ -32,7 +32,9 @@ const App = () => {
   }, [])
   const [filteredList, setFilteredList] = useState([]);
 
+  // addName function
   const addName = (event) => {
+    const baseUrl = `http://localhost:3001/persons`
     event.preventDefault();
     const newPerson = {
       name: newName,
@@ -41,7 +43,6 @@ const App = () => {
 
     // marker for duplication
     let exists = false;
-
 
     // iterate through entire array
     for (let index = 0; index < persons.length; index++) {
@@ -52,9 +53,12 @@ const App = () => {
       }
     }
     if (!exists) {
-      setPersons(persons.concat(newPerson));
+      const request = axios.post(baseUrl, newPerson).then(response => {
+      // setPersons(persons.concat(newPerson));
+      setPersons(persons.concat(response.data));
       setNewName("");
       setNewNumber("");
+      });
     }
 
   }
