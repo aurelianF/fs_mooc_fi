@@ -66,25 +66,38 @@ const App = () => {
 
     // marker for duplication
     let exists = false;
+    let oldNr = 0;
+    let oldPerson = null;
 
     // iterate through entire array
     for (let index = 0; index < persons.length; index++) {
-      if (equals(persons[index], newPerson)) {
+      if (equals(persons[index], newPerson)) { // check if person is already in the phoneboox
         exists = true;
-        alert(`${newPerson.name} is already added in the phonebook`);
+        oldNr = persons[index].number;
+        oldPerson = persons[index];
+        
         break;
       }
     }
-    if (!exists) {
+    if (!exists) {  // if new person, create it add insert it in the database
       backendProxy.create(newPerson)
         .then(person => {
           // setRerenderVar(true);
-          console.log("person creaed: ", person);
           // console.log("filteredList: " , filteredList);
           setPersons(persons.concat(person))
           setFilteredList(persons.concat(person));
         }
         );
+    } else if (oldNr !== newNumber) {   // it it exists, but the number is new
+      if (window.confirm(`${oldPerson} is already added to the phonebook, \n replace old number with new number?`)) {
+        backendProxy.update(oldPerson.id, newPerson)
+        .then(() => {
+          // trigger re-rendering with useEffect
+          setRerenderVar(true);
+        });
+      }
+    } else {  // if person already exists with same name and number exists
+      alert(`${newPerson.name} is already added in the phonebook`);
     }
 
   }
