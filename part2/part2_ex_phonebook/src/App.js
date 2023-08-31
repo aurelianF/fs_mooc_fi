@@ -3,6 +3,7 @@ import AddNewPeople from './components/AddNewPeople'
 import RenderAllPeople from './components/RenderAllPeople'
 import SearchFilter from './components/SearchFilter';
 import axios from 'axios'
+import backendProxy from './services/backendProxy'
 
 // Equals method, checking only "name" property
 function equals(a, b) {
@@ -14,6 +15,8 @@ function equals(a, b) {
 }
 // main App component
 const App = () => {
+  // console.log("Rerendering");
+  const [rerenderVar, setRerenderVar] = useState(false);
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterVar, setfilterVar] = useState('')
@@ -24,14 +27,34 @@ const App = () => {
     // { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ])
   useEffect(() => {
+    // console.log("useEffect run");
+    setRerenderVar(false);
     axios
       .get('http://localhost:3001/persons')
       .then(response => {
         setPersons(response.data)
+        setFilteredList(response.data) //
       })
-  }, [])
+  }, [rerenderVar])
   const [filteredList, setFilteredList] = useState([]);
 
+  // deletePerson function
+  const deletePerson = (id) => {
+    let person = persons.find(pers => pers.id === id);
+
+    if (person !== null) {
+      if (window.confirm(`delete ${person.name}`)) {
+        backendProxy.remove(id)
+          .then((response) => {
+            setRerenderVar(true);
+          })
+          .catch(err => console.log(err))
+      }
+    }
+    else {
+      throw new Error(response => response.statusText);
+    }
+  }
   // addName function
   const addName = (event) => {
     const baseUrl = `http://localhost:3001/persons`
@@ -53,12 +76,15 @@ const App = () => {
       }
     }
     if (!exists) {
-      const request = axios.post(baseUrl, newPerson).then(response => {
-      // setPersons(persons.concat(newPerson));
-      setPersons(persons.concat(response.data));
-      setNewName("");
-      setNewNumber("");
-      });
+      backendProxy.create(newPerson)
+        .then(person => {
+          // setRerenderVar(true);
+          console.log("person creaed: ", person);
+          // console.log("filteredList: " , filteredList);
+          setPersons(persons.concat(person))
+          setFilteredList(persons.concat(person));
+        }
+        );
     }
 
   }
@@ -71,9 +97,15 @@ const App = () => {
   const handleFilterInputChange = (event) => {
     let filterVar1 = event.target.value;
     setfilterVar(event.target.value);
-    setFilteredList(persons.filter(p => {
-      return (p.name.toLocaleLowerCase().startsWith(filterVar1.toLocaleLowerCase()))
-    }));
+
+    if (filterVar1 === "") {
+      setFilteredList(persons);
+      // setPersons(persons);
+    } else {
+      setFilteredList(persons.filter(p => {
+        return (p.name.toLocaleLowerCase().startsWith(filterVar1.toLocaleLowerCase()))
+      }));
+    }
   }
 
 
@@ -84,11 +116,20 @@ const App = () => {
 
       <h3>Add new people</h3>
       <AddNewPeople addName={addName} newName={newName} handleFieldChange={handleFieldChange}
-        newNumber={newNumber} handleNumberChange={handleNumberChange}/>
+        newNumber={newNumber} handleNumberChange={handleNumberChange} />
 
       <h2>Numbers</h2>
-      <RenderAllPeople filterVar={filterVar} filteredList={filteredList}
-        persons={persons} />
+      {filteredList.map(pers =>
+        <RenderAllPeople
+          key={pers.id}
+          pers={pers}
+
+          deletePerson={() => deletePerson(pers.id)}
+
+        />
+      )}
+      {/* <RenderAllPeople filterVar={filterVar} filteredList={filteredList}
+        persons={persons} /> */}
 
     </div>
   )
