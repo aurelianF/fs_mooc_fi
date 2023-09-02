@@ -4,6 +4,8 @@ import RenderAllPeople from './components/RenderAllPeople'
 import SearchFilter from './components/SearchFilter';
 import axios from 'axios'
 import backendProxy from './services/backendProxy'
+import Notification from './services/notification';
+import './App.css';
 
 // Equals method, checking only "name" property
 function equals(a, b) {
@@ -16,10 +18,11 @@ function equals(a, b) {
 // main App component
 const App = () => {
   // console.log("Rerendering");
-  const [rerenderVar, setRerenderVar] = useState(false);
+  const [rerenderVar, setRerenderVar] = useState(true);
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterVar, setfilterVar] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
   const [persons, setPersons] = useState([
     // { name: 'Arto Hellas', number: '040-123456', id: 1 },
     // { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
@@ -28,13 +31,16 @@ const App = () => {
   ])
   useEffect(() => {
     // console.log("useEffect run");
-    setRerenderVar(false);
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-        setFilteredList(response.data) //
-      })
+    if (rerenderVar === true) {
+      setRerenderVar(false);
+      axios
+        .get('http://localhost:3001/persons')
+        .then(response => {
+          setPersons(response.data)
+          setFilteredList(response.data) //
+        })
+    }
+
   }, [rerenderVar])
   const [filteredList, setFilteredList] = useState([]);
 
@@ -75,7 +81,7 @@ const App = () => {
         exists = true;
         oldNr = persons[index].number;
         oldPerson = persons[index];
-        
+
         break;
       }
     }
@@ -86,15 +92,24 @@ const App = () => {
           // console.log("filteredList: " , filteredList);
           setPersons(persons.concat(person))
           setFilteredList(persons.concat(person));
+          setErrorMessage(`Added ${newPerson.name}`);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 2000);
         }
-        );
+        ).catch(err => console.log(err))
     } else if (oldNr !== newNumber) {   // it it exists, but the number is new
-      if (window.confirm(`${oldPerson} is already added to the phonebook, \n replace old number with new number?`)) {
+      if (window.confirm(`${oldPerson.name} is already added to the phonebook, \n replace old number with new number?`)) {
         backendProxy.update(oldPerson.id, newPerson)
-        .then(() => {
-          // trigger re-rendering with useEffect
-          setRerenderVar(true);
-        });
+          .then(() => {
+            // trigger re-rendering with useEffect
+            setRerenderVar(true);
+          }).catch(err => {
+            setRerenderVar(true);
+            setErrorMessage(`${oldPerson.name} has already been removed from the server`);
+            setTimeout(() => setErrorMessage(null), 2000);
+          }
+          )
       }
     } else {  // if person already exists with same name and number exists
       alert(`${newPerson.name} is already added in the phonebook`);
@@ -125,6 +140,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <SearchFilter handleFilterInputChange={handleFilterInputChange} />
 
       <h3>Add new people</h3>
