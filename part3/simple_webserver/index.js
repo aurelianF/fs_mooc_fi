@@ -71,7 +71,7 @@ app.post('/api/notes', (request, response) => {
 })
 
 app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
+    response.send('<h1>Buna, draga mea!</h1>')
 })
 app.put('/api/notes/:id', (request, response) => {
 
@@ -116,7 +116,7 @@ app.delete('/api/notes/:id', (request, response) => {
     response.status(204).end()
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
