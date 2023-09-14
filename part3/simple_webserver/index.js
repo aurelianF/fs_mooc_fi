@@ -5,6 +5,8 @@ const cors_var = require('cors')
 app.use(cors_var()); 
 app.options('*', cors_var()); // this enables preflight
 
+app.use(express.static('build'))
+
 let notes = [
     {
         id: 1,
