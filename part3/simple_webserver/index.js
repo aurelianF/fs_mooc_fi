@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 
 const cors_var = require('cors')
-app.use(cors_var("http://localhost:3001/api/notes")); 
+app.use(cors_var()); 
 app.options('*', cors_var()); // this enables preflight
 
 app.use(express.static('build'))
