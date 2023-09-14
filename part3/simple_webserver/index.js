@@ -11,6 +11,11 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
 app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
@@ -60,7 +65,7 @@ app.get('/cors', (req, res) => {
 })
 app.post('/api/notes', (request, response) => {
 
-    
+
     const body = request.body
 
     if (!body.content) {
@@ -95,7 +100,7 @@ app.put('/api/notes/:id', (request, response) => {
     }
     response.set('Access-Control-Allow-Origin', '*');
     // const note = notes.find(n=>n.id === body.id);
-    objIndex = notes.findIndex(n=>n.id === body.id)
+    objIndex = notes.findIndex(n => n.id === body.id)
     notes[objIndex].important = !notes[objIndex].important;
     response.json(notes[objIndex])
 })
@@ -125,6 +130,8 @@ app.delete('/api/notes/:id', (request, response) => {
     console.log("id", id);
     response.status(204).end()
 })
+
+app.use(unknownEndpoint)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
