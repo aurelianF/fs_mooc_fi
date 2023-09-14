@@ -1,10 +1,18 @@
+// const express = require('express')
+// const app = express()
+
+// const cors_var = require('cors')
+// app.use(cors_var()); 
+// app.options('*', cors_var()); // this enables preflight
+
+// app.use(express.static('build'))
+
 const express = require('express')
 const app = express()
+const cors = require('cors')
 
-const cors_var = require('cors')
-app.use(cors_var()); 
-app.options('*', cors_var()); // this enables preflight
-
+app.use(cors())
+app.use(express.json())
 app.use(express.static('build'))
 
 let notes = [
@@ -29,7 +37,7 @@ let notes = [
         important: true
     }
 ]
-app.use(express.json())
+// app.use(express.json())
 
 // app.post('/api/notes', (request, response) => {
 //     const note = request.body
