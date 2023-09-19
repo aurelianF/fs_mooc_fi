@@ -3,9 +3,12 @@ import AddNewPeople from './components/AddNewPeople'
 import RenderAllPeople from './components/RenderAllPeople'
 import SearchFilter from './components/SearchFilter';
 import axios from 'axios'
-import backendProxy from './services/backendProxy'
+import backendConMngr from './services/backendConMngr'
 import Notification from './services/notification';
 import './App.css';
+
+// const baseUrl = 'http://localhost:3001/persons'
+const baseUrl = '/api/persons'
 
 // Equals method, checking only "name" property
 function equals(a, b) {
@@ -34,7 +37,7 @@ const App = () => {
     if (rerenderVar === true) {
       setRerenderVar(false);
       axios
-        .get('http://localhost:3001/persons')
+        .get(baseUrl)
         .then(response => {
           setPersons(response.data)
           setFilteredList(response.data) //
@@ -50,7 +53,7 @@ const App = () => {
 
     if (person !== null) {
       if (window.confirm(`delete ${person.name}`)) {
-        backendProxy.remove(id)
+        backendConMngr.remove(id)
           .then((response) => {
             setRerenderVar(true);
           })
@@ -63,7 +66,6 @@ const App = () => {
   }
   // addName function
   const addName = (event) => {
-    const baseUrl = `http://localhost:3001/persons`
     event.preventDefault();
     const newPerson = {
       name: newName,
@@ -86,7 +88,7 @@ const App = () => {
       }
     }
     if (!exists) {  // if new person, create it add insert it in the database
-      backendProxy.create(newPerson)
+      backendConMngr.create(newPerson)
         .then(person => {
           // setRerenderVar(true);
           // console.log("filteredList: " , filteredList);
@@ -100,7 +102,7 @@ const App = () => {
         ).catch(err => console.log(err))
     } else if (oldNr !== newNumber) {   // it it exists, but the number is new
       if (window.confirm(`${oldPerson.name} is already added to the phonebook, \n replace old number with new number?`)) {
-        backendProxy.update(oldPerson.id, newPerson)
+        backendConMngr.update(oldPerson.id, newPerson)
           .then(() => {
             // trigger re-rendering with useEffect
             setRerenderVar(true);
